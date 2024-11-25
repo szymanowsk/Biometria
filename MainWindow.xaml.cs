@@ -458,10 +458,11 @@ namespace Biometria_Zad_1_Kamila_Szymanowska
             BtnHistogram_Click(sender, e);
         }
 
-        //okno do zadania 3
-        private void OpenFiltersWindow_Click(object sender, RoutedEventArgs e)
+        //zadanie 3
+        private void BtnFiltersWindow_Click(object sender, RoutedEventArgs e)
         {
-            if (_bitmap == null) return;
+            if (_bitmap == null) 
+                return;
 
             FiltersWindow filtersWindow = new FiltersWindow(_bitmap);
             filtersWindow.ShowDialog();

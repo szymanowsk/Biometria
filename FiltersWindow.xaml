@@ -5,18 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Biometria_Zad_1_Kamila_Szymanowska"
         mc:Ignorable="d"
-        Title="FiltersWindow" Height="450" Width="800">
+        Title="FiltersWindow" Height="300" Width="400">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Sekcja dla filtrów konwolucyjnych -->
         <GroupBox Header="Convolution Filters" Margin="10">
             <StackPanel>
                 <Grid>
-                    <!-- Maska 3x3 -->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
@@ -28,32 +26,31 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBox Name="Kernel00" Grid.Row="0" Grid.Column="0" Width="40" />
-                    <TextBox Name="Kernel01" Grid.Row="0" Grid.Column="1" Width="40" />
-                    <TextBox Name="Kernel02" Grid.Row="0" Grid.Column="2" Width="40" />
-                    <TextBox Name="Kernel10" Grid.Row="1" Grid.Column="0" Width="40" />
-                    <TextBox Name="Kernel11" Grid.Row="1" Grid.Column="1" Width="40" />
-                    <TextBox Name="Kernel12" Grid.Row="1" Grid.Column="2" Width="40" />
-                    <TextBox Name="Kernel20" Grid.Row="2" Grid.Column="0" Width="40" />
-                    <TextBox Name="Kernel21" Grid.Row="2" Grid.Column="1" Width="40" />
-                    <TextBox Name="Kernel22" Grid.Row="2" Grid.Column="2" Width="40" />
+                    <TextBox Name="Mask00" Grid.Row="0" Grid.Column="0" Width="30" />
+                    <TextBox Name="Mask01" Grid.Row="0" Grid.Column="1" Width="30" />
+                    <TextBox Name="Mask02" Grid.Row="0" Grid.Column="2" Width="30" />
+                    <TextBox Name="Mask10" Grid.Row="1" Grid.Column="0" Width="30" />
+                    <TextBox Name="Mask11" Grid.Row="1" Grid.Column="1" Width="30" />
+                    <TextBox Name="Mask12" Grid.Row="1" Grid.Column="2" Width="30" />
+                    <TextBox Name="Mask20" Grid.Row="2" Grid.Column="0" Width="30" />
+                    <TextBox Name="Mask21" Grid.Row="2" Grid.Column="1" Width="30" />
+                    <TextBox Name="Mask22" Grid.Row="2" Grid.Column="2" Width="30" />
                 </Grid>
-                <Button Content="Apply Custom Kernel" Click="ApplyCustomKernel_Click" Margin="5" />
-                <StackPanel Orientation="Horizontal" Margin="5">
-                    <Button Content="LowPass" Tag="LowPass" Click="LoadKernel_Click" />
-                    <Button Content="Prewitt" Tag="Prewitt" Click="LoadKernel_Click" />
-                    <Button Content="Sobel" Tag="Sobel" Click="LoadKernel_Click" />
-                    <Button Content="Laplacian" Tag="Laplacian" Click="LoadKernel_Click" />
-                    <Button Content="Corner" Tag="Corner" Click="LoadKernel_Click" />
+                <Button Content="Apply Filter" Click="BtnApplyCustomMask_Click" Margin="5" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
+                    <Button Content="LowPass" Tag="LowPass" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
+                    <Button Content="Prewitt" Tag="Prewitt" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
+                    <Button Content="Sobel" Tag="Sobel" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
+                    <Button Content="Laplace" Tag="Laplace" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
+                    <Button Content="Corner" Tag="Corner" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>
 
-        <!-- Sekcja dla filtrów medianowych -->
         <GroupBox Header="Median Filters" Margin="10" Grid.Row="1">
             <StackPanel>
-                <Button Content="Median Filter 3x3" Click="ApplyMedian3x3_Click" />
-                <Button Content="Median Filter 5x5" Click="ApplyMedian5x5_Click" />
+                <Button Content="Median Filter 3x3" Click="BtnApplyMedian3x3_Click" Margin="0,0,0,10"/>
+                <Button Content="Median Filter 5x5" Click="BtnApplyMedian5x5_Click"/>
             </StackPanel>
         </GroupBox>
     </Grid>

@@ -26,115 +26,125 @@ namespace Biometria_Zad_1_Kamila_Szymanowska
         public FiltersWindow(Bitmap bitmap)
         {
             InitializeComponent();
-            _bitmap = (Bitmap)bitmap.Clone();
+            //_bitmap = (Bitmap)bitmap.Clone();
+            _bitmap = bitmap;
         }
 
-        private void ApplyCustomKernel_Click(object sender, RoutedEventArgs e)
+        private void BtnApplyCustomMask_Click(object sender, RoutedEventArgs e)
         {
-            if (_bitmap == null) return;
+            if (_bitmap == null) 
+                return;
 
-            double[,] kernel = new double[3, 3]
+            try
             {
-            { double.Parse(Kernel00.Text), double.Parse(Kernel01.Text), double.Parse(Kernel02.Text) },
-            { double.Parse(Kernel10.Text), double.Parse(Kernel11.Text), double.Parse(Kernel12.Text) },
-            { double.Parse(Kernel20.Text), double.Parse(Kernel21.Text), double.Parse(Kernel22.Text) }
-            };
+                double[,] mask = new double[3, 3]
+                {
+                    { double.Parse(Mask00.Text), double.Parse(Mask01.Text), double.Parse(Mask02.Text) },
+                    { double.Parse(Mask10.Text), double.Parse(Mask11.Text), double.Parse(Mask12.Text) },
+                    { double.Parse(Mask20.Text), double.Parse(Mask21.Text), double.Parse(Mask22.Text) }
+                };
 
-            _bitmap = ApplyConvolution(_bitmap, kernel);
-            UpdatedBitmap = _bitmap;
-            MessageBox.Show("Filter applied!");
+                _bitmap = ApplyConvolution(_bitmap, mask);
+                UpdatedBitmap = _bitmap;
+                this.DialogResult = true;
+            }
+            catch
+            {
+                MessageBox.Show("Invalid mask values.");
+            }
         }
 
-        private void LoadKernel_Click(object sender, RoutedEventArgs e)
+        private void BtnLoadMask_Click(object sender, RoutedEventArgs e)
         {
-            var kernelName = (sender as Button)?.Tag.ToString();
-            switch (kernelName)
+            var maskName = (sender as Button)?.Tag.ToString();
+            switch (maskName)
             {
                 case "LowPass":
-                    SetKernelValues(new double[3, 3]
+                    SetMaskValues(new double[3, 3]
                     {
-                    { 1 / 9.0, 1 / 9.0, 1 / 9.0 },
-                    { 1 / 9.0, 1 / 9.0, 1 / 9.0 },
-                    { 1 / 9.0, 1 / 9.0, 1 / 9.0 }
+                        { 1 / 9.0, 1 / 9.0, 1 / 9.0 },
+                        { 1 / 9.0, 1 / 9.0, 1 / 9.0 },
+                        { 1 / 9.0, 1 / 9.0, 1 / 9.0 }
                     });
                     break;
                 case "Prewitt":
-                    SetKernelValues(new double[3, 3]
+                    SetMaskValues(new double[3, 3]
                     {
-                    { -1, 0, 1 },
-                    { -1, 0, 1 },
-                    { -1, 0, 1 }
-                    });
+                        { -1, 0, 1 },
+                        { -1, 0, 1 },
+                        { -1, 0, 1 }
+                    }); 
                     break;
                 case "Sobel":
-                    SetKernelValues(new double[3, 3]
+                    SetMaskValues(new double[3, 3]
                     {
-                    { -1, 0, 1 },
-                    { -2, 0, 2 },
-                    { -1, 0, 1 }
+                        { -1, 0, 1 },
+                        { -2, 0, 2 },
+                        { -1, 0, 1 }
                     });
                     break;
-                case "Laplacian":
-                    SetKernelValues(new double[3, 3]
-                    {
-                    { 0, -1, 0 },
-                    { -1, 4, -1 },
-                    { 0, -1, 0 }
+                case "Laplace":
+                    SetMaskValues(new double[3, 3]
+                    {   
+                        { 0, -1, 0 },
+                        { -1, 4, -1 },
+                        { 0, -1, 0 }
                     });
                     break;
                 case "Corner":
-                    SetKernelValues(new double[3, 3]
+                    SetMaskValues(new double[3, 3]
                     {
-                    { -1, -1, -1 },
-                    { -1, 8, -1 },
-                    { -1, -1, -1 }
+                        { 1, 1, 1 },
+                        { 1, -2, -1 },
+                        { 1, -1, -1 }
                     });
                     break;
             }
         }
 
-        private void ApplyMedian3x3_Click(object sender, RoutedEventArgs e)
+        private void BtnApplyMedian3x3_Click(object sender, RoutedEventArgs e)
         {
-            if (_bitmap == null) return;
+            if (_bitmap == null) 
+                return;
 
             _bitmap = ApplyMedianFilter(_bitmap, 3);
             UpdatedBitmap = _bitmap;
-            MessageBox.Show("Median 3x3 applied!");
+            this.DialogResult = true;
         }
 
-        private void ApplyMedian5x5_Click(object sender, RoutedEventArgs e)
+        private void BtnApplyMedian5x5_Click(object sender, RoutedEventArgs e)
         {
-            if (_bitmap == null) return;
+            if (_bitmap == null) 
+                return;
 
             _bitmap = ApplyMedianFilter(_bitmap, 5);
             UpdatedBitmap = _bitmap;
-            MessageBox.Show("Median 5x5 applied!");
+            this.DialogResult = true;
         }
 
-        private void SetKernelValues(double[,] kernel)
+        private void SetMaskValues(double[,] mask)
         {
-            Kernel00.Text = kernel[0, 0].ToString();
-            Kernel01.Text = kernel[0, 1].ToString();
-            Kernel02.Text = kernel[0, 2].ToString();
-            Kernel10.Text = kernel[1, 0].ToString();
-            Kernel11.Text = kernel[1, 1].ToString();
-            Kernel12.Text = kernel[1, 2].ToString();
-            Kernel20.Text = kernel[2, 0].ToString();
-            Kernel21.Text = kernel[2, 1].ToString();
-            Kernel22.Text = kernel[2, 2].ToString();
+            Mask00.Text = mask[0, 0].ToString();
+            Mask01.Text = mask[0, 1].ToString();
+            Mask02.Text = mask[0, 2].ToString();
+            Mask10.Text = mask[1, 0].ToString();
+            Mask11.Text = mask[1, 1].ToString();
+            Mask12.Text = mask[1, 2].ToString();
+            Mask20.Text = mask[2, 0].ToString();
+            Mask21.Text = mask[2, 1].ToString();
+            Mask22.Text = mask[2, 2].ToString();
         }
 
-        private Bitmap ApplyConvolution(Bitmap bitmap, double[,] kernel)
+        private Bitmap ApplyConvolution(Bitmap bitmap, double[,] mask)
         {
             int width = bitmap.Width;
             int height = bitmap.Height;
             Bitmap newBitmap = new Bitmap(width, height);
 
-            // Convolution kernel dimensions
-            int kernelWidth = kernel.GetLength(1);
-            int kernelHeight = kernel.GetLength(0);
-            int offsetX = kernelWidth / 2;
-            int offsetY = kernelHeight / 2;
+            int maskWidth = mask.GetLength(1);
+            int maskHeight = mask.GetLength(0);
+            int offsetX = maskWidth / 2;
+            int offsetY = maskHeight / 2;
 
             for (int y = 0; y < height; y++)
             {
@@ -142,19 +152,19 @@ namespace Biometria_Zad_1_Kamila_Szymanowska
                 {
                     double rSum = 0, gSum = 0, bSum = 0;
 
-                    for (int ky = 0; ky < kernelHeight; ky++)
+                    for (int ky = 0; ky < maskHeight; ky++)
                     {
-                        for (int kx = 0; kx < kernelWidth; kx++)
+                        for (int kx = 0; kx < maskWidth; kx++)
                         {
                             int pixelX = Math.Min(width - 1, Math.Max(0, x + kx - offsetX));
                             int pixelY = Math.Min(height - 1, Math.Max(0, y + ky - offsetY));
 
                             System.Drawing.Color pixel = bitmap.GetPixel(pixelX, pixelY);
 
-                            double kernelValue = kernel[ky, kx];
-                            rSum += pixel.R * kernelValue;
-                            gSum += pixel.G * kernelValue;
-                            bSum += pixel.B * kernelValue;
+                            double maskValue = mask[ky, kx];
+                            rSum += pixel.R * maskValue;
+                            gSum += pixel.G * maskValue;
+                            bSum += pixel.B * maskValue;
                         }
                     }
 
