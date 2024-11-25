@@ -9,7 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 
-namespace Biometria_Zad_1_Kamila_Szymanowska
+namespace Biometria
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

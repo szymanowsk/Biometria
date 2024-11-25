@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Biometria_Zad_1_Kamila_Szymanowska
+namespace Biometria
 {
     /// <summary>
     /// Interaction logic for FiltersWindow.xaml

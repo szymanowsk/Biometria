@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biometria_Zad_1_Kamila_Szymanowska", "Biometria_Zad_1_Kamila_Szymanowska.csproj", "{D5E91945-FB86-46A5-90D5-C2BEF6E58862}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Biometria", "Biometria.csproj", "{D5E91945-FB86-46A5-90D5-C2BEF6E58862}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
