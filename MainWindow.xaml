@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Biometria_Zad_1_Kamila_Szymanowska"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1000">
+        Title="MainWindow" Height="710" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -21,6 +21,7 @@
             <Button Name="DarkenButton" Content="Darken" Click="BtnDarken_Click" Margin="5,0,0,0"/>
             <Button Name="StretchHistogramButton" Content="Stretch Histogram" Click="BtnHistogramStretch_Click" Margin="5,0,0,0"/>
             <Button Name="EqualizeHistogramButton" Content="Equalize Histogram" Click="BtnHistogramEqualize_Click" Margin="5,0,0,0"/>
+            <Button Content="Filters" Click="OpenFiltersWindow_Click" Margin="5,0,0,0"/>
         </StackPanel>
 
         <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10">

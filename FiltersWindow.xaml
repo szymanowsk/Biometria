@@ -1,0 +1,60 @@
+﻿<Window x:Class="Biometria_Zad_1_Kamila_Szymanowska.FiltersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Biometria_Zad_1_Kamila_Szymanowska"
+        mc:Ignorable="d"
+        Title="FiltersWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Sekcja dla filtrów konwolucyjnych -->
+        <GroupBox Header="Convolution Filters" Margin="10">
+            <StackPanel>
+                <Grid>
+                    <!-- Maska 3x3 -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBox Name="Kernel00" Grid.Row="0" Grid.Column="0" Width="40" />
+                    <TextBox Name="Kernel01" Grid.Row="0" Grid.Column="1" Width="40" />
+                    <TextBox Name="Kernel02" Grid.Row="0" Grid.Column="2" Width="40" />
+                    <TextBox Name="Kernel10" Grid.Row="1" Grid.Column="0" Width="40" />
+                    <TextBox Name="Kernel11" Grid.Row="1" Grid.Column="1" Width="40" />
+                    <TextBox Name="Kernel12" Grid.Row="1" Grid.Column="2" Width="40" />
+                    <TextBox Name="Kernel20" Grid.Row="2" Grid.Column="0" Width="40" />
+                    <TextBox Name="Kernel21" Grid.Row="2" Grid.Column="1" Width="40" />
+                    <TextBox Name="Kernel22" Grid.Row="2" Grid.Column="2" Width="40" />
+                </Grid>
+                <Button Content="Apply Custom Kernel" Click="ApplyCustomKernel_Click" Margin="5" />
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <Button Content="LowPass" Tag="LowPass" Click="LoadKernel_Click" />
+                    <Button Content="Prewitt" Tag="Prewitt" Click="LoadKernel_Click" />
+                    <Button Content="Sobel" Tag="Sobel" Click="LoadKernel_Click" />
+                    <Button Content="Laplacian" Tag="Laplacian" Click="LoadKernel_Click" />
+                    <Button Content="Corner" Tag="Corner" Click="LoadKernel_Click" />
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Sekcja dla filtrów medianowych -->
+        <GroupBox Header="Median Filters" Margin="10" Grid.Row="1">
+            <StackPanel>
+                <Button Content="Median Filter 3x3" Click="ApplyMedian3x3_Click" />
+                <Button Content="Median Filter 5x5" Click="ApplyMedian5x5_Click" />
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>
