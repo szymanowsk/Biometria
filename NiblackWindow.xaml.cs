@@ -47,11 +47,11 @@ namespace Biometria
                 k = parsedK;
             }
 
-            UpdatedBitmap = ApplyNiblackThreshold(_bitmap, windowSize, k);
+            UpdatedBitmap = ApplyNiblack(_bitmap, windowSize, k);
             this.DialogResult = true;
         }
 
-        private Bitmap ApplyNiblackThreshold(Bitmap bitmap, int windowSize, double k)
+        private Bitmap ApplyNiblack(Bitmap bitmap, int windowSize, double k)
         {
             Bitmap binaryBitmap = new Bitmap(bitmap.Width, bitmap.Height);
             int halfSize = windowSize / 2;
@@ -60,21 +60,34 @@ namespace Biometria
             {
                 for (int x = 0; x < bitmap.Width; x++)
                 {
-                    List<int> pixelValues = new List<int>();
+                    int sum = 0;
+                    List<int> values = new List<int>();
+
                     for (int wy = -halfSize; wy <= halfSize; wy++)
                     {
                         for (int wx = -halfSize; wx <= halfSize; wx++)
                         {
-                            int px = Math.Clamp(x + wx, 0, bitmap.Width - 1);
-                            int py = Math.Clamp(y + wy, 0, bitmap.Height - 1);
-                            pixelValues.Add(bitmap.GetPixel(px, py).R);
+                            int pX = Math.Clamp(x + wx, 0, bitmap.Width - 1);
+                            int pY = Math.Clamp(y + wy, 0, bitmap.Height - 1);
+
+                            System.Drawing.Color pColor = bitmap.GetPixel(pX, pY);
+                            int gray = (pColor.R + pColor.G + pColor.B) / 3;
+
+                            sum += gray;
+                            values.Add(gray);
                         }
                     }
-                    double mean = pixelValues.Average();
-                    double stdDev = Math.Sqrt(pixelValues.Average(p => Math.Pow(p - mean, 2)));
-                    int threshold = (int)(mean + k * stdDev);
 
-                    binaryBitmap.SetPixel(x, y, bitmap.GetPixel(x, y).R >= threshold ? System.Drawing.Color.White : System.Drawing.Color.Black);
+                    double avg = (double)sum / values.Count;
+                    double varSum = values.Sum(value => Math.Pow(value - avg, 2));
+                    double variance = Math.Sqrt(varSum / values.Count);
+                    double threshold = avg + k * variance;
+
+                    System.Drawing.Color currentColor = bitmap.GetPixel(x, y);
+                    int currentGray = (currentColor.R + currentColor.G + currentColor.B) / 3;
+
+                    System.Drawing.Color newColor = currentGray > threshold ? System.Drawing.Color.White : System.Drawing.Color.Black;
+                    binaryBitmap.SetPixel(x, y, newColor);
                 }
             }
             return binaryBitmap;
