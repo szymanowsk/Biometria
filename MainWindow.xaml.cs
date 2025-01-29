@@ -474,5 +474,50 @@ namespace Biometria
             }
         }
 
+        //zadanie 4
+        private void BtnBinarizeWindow_Click(object sender, RoutedEventArgs e)
+        {
+            if (_bitmap == null)
+                return;
+
+            BinarizeWindow binarizeWindow = new BinarizeWindow(_bitmap);
+            binarizeWindow.ShowDialog();
+
+            if (binarizeWindow.UpdatedBitmap != null)
+            {
+                _bitmap = binarizeWindow.UpdatedBitmap;
+                ImageDisplay.Source = BitmapToImageSource(_bitmap);
+            }
+        }
+
+        private void BtnBinarizeOtsuWindow_Click(object sender, RoutedEventArgs e)
+        {
+            if (_bitmap == null)
+                return;
+
+            OtsuWindow otsuWindow = new OtsuWindow(_bitmap);
+            otsuWindow.ShowDialog();
+
+            if (otsuWindow.UpdatedBitmap != null)
+            {
+                _bitmap = otsuWindow.UpdatedBitmap;
+                ImageDisplay.Source = BitmapToImageSource(_bitmap);
+            }
+        }
+
+        private void BtnBinarizeNiblackWindow_Click(object sender, RoutedEventArgs e)
+        {
+            if (_bitmap == null)
+                return;
+
+            NiblackWindow niblackWindow = new NiblackWindow(_bitmap);
+            niblackWindow.ShowDialog();
+
+            if (niblackWindow.UpdatedBitmap != null)
+            {
+                _bitmap = niblackWindow.UpdatedBitmap;
+                ImageDisplay.Source = BitmapToImageSource(_bitmap);
+            }
+        }
     }
 }

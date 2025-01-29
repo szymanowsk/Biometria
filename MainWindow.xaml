@@ -21,7 +21,10 @@
             <Button Name="DarkenButton" Content="Darken" Click="BtnDarken_Click" Margin="5,0,0,0"/>
             <Button Name="StretchHistogramButton" Content="Stretch Histogram" Click="BtnHistogramStretch_Click" Margin="5,0,0,0"/>
             <Button Name="EqualizeHistogramButton" Content="Equalize Histogram" Click="BtnHistogramEqualize_Click" Margin="5,0,0,0"/>
-            <Button Content="Filters" Click="BtnFiltersWindow_Click" Margin="5,0,0,0"/>
+            <Button Name="FiltersButton" Content="Filters" Click="BtnFiltersWindow_Click" Margin="5,0,0,0"/>
+            <Button Name="BinarizeThresholdButton" Content="Binarize" Click="BtnBinarizeWindow_Click" Margin="5,0,0,0"/>
+            <Button Name="BinarizeOtsuButton" Content="BinarizeOtsu" Click="BtnBinarizeOtsuWindow_Click" Margin="5,0,0,0"/>
+            <Button Name="BinarizeNiblackButton" Content="BinarizeNiblack" Click="BtnBinarizeNiblackWindow_Click" Margin="5,0,0,0"/>
         </StackPanel>
 
         <Grid Grid.Row="1" Margin="10">

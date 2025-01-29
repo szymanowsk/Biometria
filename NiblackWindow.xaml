@@ -1,0 +1,14 @@
+﻿<Window x:Class="Biometria.NiblackWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Biometria"
+        mc:Ignorable="d"
+        Title="NiblackWindow" Height="130" Width="300">
+    <Grid>
+        <TextBox x:Name="SizeTextBox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="100" Margin="20,10,0,0" />
+        <TextBox x:Name="KTextBox" HorizontalAlignment="Right" VerticalAlignment="Top" Width="100" Margin="0,10,20,0" />
+        <Button Content="Apply" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="120" Height="30" Margin="0,0,0,10" Click="BtnApplyNiblack_Click" />
+    </Grid>
+</Window>
