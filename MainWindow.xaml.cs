@@ -13,7 +13,7 @@ namespace Biometria
     public partial class MainWindow : Window
     {
         private Bitmap? _bitmap;
-
+        private Bitmap? _originalBitmap;  // kopia oryginalnego obrazu
         private System.Drawing.Point? _selectedPixel = null; // zmienna do przechowywania zaznaczonego piksela
 
         public MainWindow()
@@ -41,6 +41,7 @@ namespace Biometria
                 _bitmap = new Bitmap(filePath);
             }
 
+            _originalBitmap = (Bitmap)_bitmap.Clone();
             ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
 
@@ -80,6 +81,26 @@ namespace Biometria
                     MessageBox.Show("NIeprawidłowy format");
                     break;
             }
+        }
+
+        private void BtnResetImage_Click(object sender, RoutedEventArgs e)
+        {
+            if (_originalBitmap == null)
+                return;
+
+            _bitmap = (Bitmap)_originalBitmap.Clone();
+            ImageDisplay.Source = BitmapToImageSource(_bitmap);
+
+            ResetImageTransform();
+        }
+
+        private void ResetImageTransform()
+        {
+            imageScaleTransform.ScaleX = 1;
+            imageScaleTransform.ScaleY = 1;
+
+            imageTranslateTransform.X = 0;
+            imageTranslateTransform.Y = 0;
         }
 
         // konwertowanie Bitmapy na ImageSource (do wyświetlania w WPF)
@@ -127,6 +148,12 @@ namespace Biometria
         {
             if (_bitmap == null)
                 return;
+
+            if (e.ChangedButton == MouseButton.Middle)
+            {
+                ResetImageTransform();
+                return;
+            }
 
             var position = e.GetPosition(ImageDisplay);
 
