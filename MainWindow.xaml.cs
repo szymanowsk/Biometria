@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
-using Svg; // Biblioteka SVG.Net
+using Svg;
 using System.Drawing;
-//using System.Windows.Shapes;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
@@ -11,42 +10,38 @@ using System.Windows.Media.Imaging;
 
 namespace Biometria
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private Bitmap? _bitmap;
 
-        private System.Drawing.Point? selectedPixel = null; // zmienna do przechowywania zaznaczonego piksela
+        private System.Drawing.Point? _selectedPixel = null; // zmienna do przechowywania zaznaczonego piksela
 
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        //zadanie 1.1
         private void BtnOpen_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.tiff;*.svg";
 
-            if (openFileDialog.ShowDialog() == true)
+            if (openFileDialog.ShowDialog() != true) 
+                return;
+
+            string filePath = openFileDialog.FileName;
+            string extension = Path.GetExtension(filePath).ToLower();
+
+            if (extension == ".svg")
             {
-                string filePath = openFileDialog.FileName;
-                string extension = Path.GetExtension(filePath).ToLower();
-
-                if (extension == ".svg")
-                {
-                    _bitmap = LoadSvg(filePath);
-                }
-                else
-                {
-                    _bitmap = new Bitmap(filePath);
-                }
-
-                ImageDisplay.Source = BitmapToImageSource(_bitmap);
+                _bitmap = LoadSvg(filePath);
             }
+            else
+            {
+                _bitmap = new Bitmap(filePath);
+            }
+
+            ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
@@ -55,40 +50,39 @@ namespace Biometria
                 return;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "JPEG Image|*.jpg|PNG Image|*.png|Bitmap Image|*.bmp|TIFF Image|*.tiff|SVG Image|*.svg";
+            saveFileDialog.Filter = "JPEG Image|*.jpg|PNG Image|*.png|Bitmap Image|*.bmp|TIFF Image|*.tiff";
 
-            if (saveFileDialog.ShowDialog() == true)
+            if (saveFileDialog.ShowDialog() != true) 
+                return;
+
+            string filePath = saveFileDialog.FileName;
+            string extension = Path.GetExtension(filePath).ToLower();
+
+            switch (extension)
             {
-                string filePath = saveFileDialog.FileName;
-
-                string extension = Path.GetExtension(filePath).ToLower();
-
-                switch (extension)
-                {
-                    case ".jpg":
-                    case ".jpeg":
-                        _bitmap.Save(filePath, ImageFormat.Jpeg);
-                        break;
-                    case ".png":
-                        _bitmap.Save(filePath, ImageFormat.Png);
-                        break;
-                    case ".bmp":
-                        _bitmap.Save(filePath, ImageFormat.Bmp);
-                        break;
-                    case ".tiff":
-                        _bitmap.Save(filePath, ImageFormat.Tiff);
-                        break;
-                    case ".svg":
-                        //SaveSvg(filePath);
-                        break;
-                    default:
-                        MessageBox.Show("NIeprawidłowy format");
-                        break;
-                }
+                case ".jpg":
+                case ".jpeg":
+                    _bitmap.Save(filePath, ImageFormat.Jpeg);
+                    break;
+                case ".png":
+                    _bitmap.Save(filePath, ImageFormat.Png);
+                    break;
+                case ".bmp":
+                    _bitmap.Save(filePath, ImageFormat.Bmp);
+                    break;
+                case ".tiff":
+                    _bitmap.Save(filePath, ImageFormat.Tiff);
+                    break;
+                case ".svg":
+                    //SaveSvg(filePath);
+                    break;
+                default:
+                    MessageBox.Show("NIeprawidłowy format");
+                    break;
             }
         }
 
-        // Konwertowanie Bitmapy na ImageSource (do wyświetlania w WPF)
+        // konwertowanie Bitmapy na ImageSource (do wyświetlania w WPF)
         private BitmapImage BitmapToImageSource(Bitmap bitmap)
         {
             using (MemoryStream memory = new MemoryStream())
@@ -113,12 +107,6 @@ namespace Biometria
             return svgDoc.Draw();
         }
 
-        private void SaveSvg(string filePath)
-        {
-            //nie ma
-        }
-
-        //zadanie 1.2
         private void ImageDisplay_MouseMove(object sender, MouseEventArgs e)
         {
             if (_bitmap == null)
@@ -128,11 +116,11 @@ namespace Biometria
             int x = (int)(position.X * _bitmap.Width / ImageDisplay.ActualWidth);
             int y = (int)(position.Y * _bitmap.Height / ImageDisplay.ActualHeight);
 
-            if (x >= 0 && x < _bitmap.Width && y >= 0 && y < _bitmap.Height)
-            {
-                System.Drawing.Color color = _bitmap.GetPixel(x, y);
-                PixelInfoText.Text = $"X: {x}, Y: {y} - R: {color.R}, G: {color.G}, B: {color.B}";
-            }
+            if (x < 0 || x >= _bitmap.Width || y < 0 || y >= _bitmap.Height) 
+                return;
+
+            System.Drawing.Color color = _bitmap.GetPixel(x, y);
+            PixelInfoText.Text = $"X: {x}, Y: {y} - R: {color.R}, G: {color.G}, B: {color.B}";
         }
 
         private void ImageDisplay_MouseDown(object sender, MouseButtonEventArgs e)
@@ -147,7 +135,7 @@ namespace Biometria
 
             if (x >= 0 && x < _bitmap.Width && y >= 0 && y < _bitmap.Height)
             {
-                selectedPixel = new System.Drawing.Point(x, y);
+                _selectedPixel = new System.Drawing.Point(x, y);
             }
         }
 
@@ -156,19 +144,21 @@ namespace Biometria
             if (_bitmap == null)
                 return;
 
-            int x = (int)selectedPixel.Value.X;
-            int y = (int)selectedPixel.Value.Y;
+            if (_selectedPixel != null)
+            {
+                int x = (int)_selectedPixel.Value.X;
+                int y = (int)_selectedPixel.Value.Y;
 
-            int r = int.Parse(RedTextBox.Text);
-            int g = int.Parse(GreenTextBox.Text);
-            int b = int.Parse(BlueTextBox.Text);
+                int r = int.Parse(RedTextBox.Text);
+                int g = int.Parse(GreenTextBox.Text);
+                int b = int.Parse(BlueTextBox.Text);
 
-            _bitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(r, g, b));
+                _bitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(r, g, b));
+            }
 
             ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
 
-        //zadanie 1.3
         private void ImageDisplay_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (_bitmap == null)
@@ -191,7 +181,6 @@ namespace Biometria
             imageScaleTransform.ScaleY = newScaleY;
         }
 
-        //zadanie 2
         private void BtnHistogram_Click(object sender, RoutedEventArgs e)
         {
             if (_bitmap == null)
@@ -236,7 +225,7 @@ namespace Biometria
 
             int max = histogram.Max();
 
-            //oś x
+            // oś x
             var xAxis = new System.Windows.Shapes.Line
             {
                 X1 = 40,
@@ -248,7 +237,7 @@ namespace Biometria
             };
             canvas.Children.Add(xAxis);
 
-            //oś y
+            // oś y
             var yAxis = new System.Windows.Shapes.Line
             {
                 X1 = 40,
@@ -260,7 +249,7 @@ namespace Biometria
             };
             canvas.Children.Add(yAxis);
 
-            //podpisy na x
+            // podpisy na x
             for (int i = 0; i <= 256; i += 64)
             {
                 TextBlock label = new TextBlock
@@ -273,7 +262,7 @@ namespace Biometria
                 canvas.Children.Add(label);
             }
 
-            //podisy na y
+            // podisy na y
             for (int i = 0; i <= 10; i++)
             {
                 TextBlock label = new TextBlock
@@ -288,7 +277,7 @@ namespace Biometria
 
             for (int i = 0; i < histogram.Length; i++)
             {
-                double normalizedHeight = (histogram[i] / (double)max) * (canvas.Height - 50); // Leave space for axes
+                double normalizedHeight = (histogram[i] / (double)max) * (canvas.Height - 50);
                 System.Windows.Shapes.Rectangle rect = new System.Windows.Shapes.Rectangle
                 {
                     Width = (canvas.Width - 60) / 256,
@@ -303,7 +292,6 @@ namespace Biometria
             tabcontrol.Items.Add(tabItem);
         }
 
-        //zadanie 2.1
         private Bitmap ApplyLUT(Bitmap bitmap, byte[] lut)
         {
             Bitmap newBitmap = new Bitmap(bitmap.Width, bitmap.Height);
@@ -325,7 +313,7 @@ namespace Biometria
             return newBitmap;
         }
 
-        //metody do rozjasniania/ściemniania obrazu
+        // metody do rozjaśniania/ściemniania obrazu
         private byte[] BrighteningLUT()
         {
             byte[] lut = new byte[256];
@@ -366,7 +354,6 @@ namespace Biometria
             ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
 
-        //zadanie 2.2
         private void BtnHistogramStretch_Click(object sender, RoutedEventArgs e)
         {
             if (_bitmap == null)
@@ -378,7 +365,7 @@ namespace Biometria
                 for (int x = 0; x < _bitmap.Width; x++)
                 {
                     var pixel = _bitmap.GetPixel(x, y);
-                    //int gray = (int)(0.299 * pixel.R + 0.587 * pixel.G + 0.114 * pixel.B); // Skala szarości w modelu YUV. Ma on tą zaletę, że bierze pod uwagę, że ludzkie oko jest bardziej wyczulone na kolor zielony, a najmniej na kolor niebieski.
+                    //int gray = (int)(0.299 * pixel.R + 0.587 * pixel.G + 0.114 * pixel.B); // skala szarości w modelu YUV. Ma on tą zaletę, że bierze pod uwagę, że ludzkie oko jest bardziej wyczulone na kolor zielony, a najmniej na kolor niebieski.
                     int gray = (pixel.R + pixel.G + pixel.B) / 3;
                     kmin = Math.Min(kmin, gray);
                     kmax = Math.Max(kmax, gray);
@@ -413,7 +400,6 @@ namespace Biometria
             BtnHistogram_Click(sender, e);
         }
 
-        //zadanie 2.3
         private void BtnHistogramEqualize_Click(object sender, RoutedEventArgs e)
         {
             if (_bitmap == null)
@@ -430,22 +416,22 @@ namespace Biometria
                 }
             }
 
-            //Obliczenie dystrybuanty dla obrazu na podstawie jego histogramu (cumulative distribution function)
+            // obliczenie dystrybuanty dla obrazu na podstawie jego histogramu (cumulative distribution function)
             double[] cdf = new double[256];
             double cumulativeSum = 0;
             int totalPixels = _bitmap.Width * _bitmap.Height;
 
             for (int k = 0; k < histogram.Length; k++)
             {
-                double pr = (double)histogram[k] / totalPixels; //Prawdopodobieństwo wystąpienia r_k
+                double pr = (double)histogram[k] / totalPixels; // prawdopodobieństwo wystąpienia r_k
                 cumulativeSum += pr;
                 cdf[k] = cumulativeSum;
             }
 
-            //Obliczenie wartości w tablicy LUT
+            // obliczenie wartości w tablicy LUT
             byte[] lut = new byte[256];
-            double s0 = cdf[0]; //Wartość dystrybuanty dla S_0
-            double mMinus1 = 256 - 1; //m - 1, gdzie m to liczba składowych
+            double s0 = cdf[0]; // wartość dystrybuanty dla S_0
+            double mMinus1 = 256 - 1; // vm - 1, gdzie m to liczba składowych
 
             for (int k = 0; k < cdf.Length; k++)
             {
@@ -458,7 +444,6 @@ namespace Biometria
             BtnHistogram_Click(sender, e);
         }
 
-        //zadanie 3
         private void BtnFiltersWindow_Click(object sender, RoutedEventArgs e)
         {
             if (_bitmap == null) 
@@ -467,14 +452,13 @@ namespace Biometria
             FiltersWindow filtersWindow = new FiltersWindow(_bitmap);
             filtersWindow.ShowDialog();
 
-            if (filtersWindow.UpdatedBitmap != null)
-            {
-                _bitmap = filtersWindow.UpdatedBitmap;
-                ImageDisplay.Source = BitmapToImageSource(_bitmap);
-            }
+            if (filtersWindow.UpdatedBitmap == null) 
+                return;
+
+            _bitmap = filtersWindow.UpdatedBitmap;
+            ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
 
-        //zadanie 4
         private void BtnBinarizeWindow_Click(object sender, RoutedEventArgs e)
         {
             if (_bitmap == null)
@@ -483,11 +467,11 @@ namespace Biometria
             BinarizeWindow binarizeWindow = new BinarizeWindow(_bitmap);
             binarizeWindow.ShowDialog();
 
-            if (binarizeWindow.UpdatedBitmap != null)
-            {
-                _bitmap = binarizeWindow.UpdatedBitmap;
-                ImageDisplay.Source = BitmapToImageSource(_bitmap);
-            }
+            if (binarizeWindow.UpdatedBitmap == null) 
+                return;
+
+            _bitmap = binarizeWindow.UpdatedBitmap;
+            ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
 
         private void BtnBinarizeOtsuWindow_Click(object sender, RoutedEventArgs e)
@@ -498,11 +482,11 @@ namespace Biometria
             OtsuWindow otsuWindow = new OtsuWindow(_bitmap);
             otsuWindow.ShowDialog();
 
-            if (otsuWindow.UpdatedBitmap != null)
-            {
-                _bitmap = otsuWindow.UpdatedBitmap;
-                ImageDisplay.Source = BitmapToImageSource(_bitmap);
-            }
+            if (otsuWindow.UpdatedBitmap == null) 
+                return;
+
+            _bitmap = otsuWindow.UpdatedBitmap;
+            ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
 
         private void BtnBinarizeNiblackWindow_Click(object sender, RoutedEventArgs e)
@@ -513,11 +497,11 @@ namespace Biometria
             NiblackWindow niblackWindow = new NiblackWindow(_bitmap);
             niblackWindow.ShowDialog();
 
-            if (niblackWindow.UpdatedBitmap != null)
-            {
-                _bitmap = niblackWindow.UpdatedBitmap;
-                ImageDisplay.Source = BitmapToImageSource(_bitmap);
-            }
+            if (niblackWindow.UpdatedBitmap == null) 
+                return;
+
+            _bitmap = niblackWindow.UpdatedBitmap;
+            ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
     }
 }

@@ -1,23 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Biometria
 {
-    /// <summary>
-    /// Interaction logic for NiblackWindow.xaml
-    /// </summary>
     public partial class NiblackWindow : Window
     {
         private Bitmap? _bitmap;
@@ -34,8 +19,8 @@ namespace Biometria
             if (_bitmap == null)
                 return;
 
-            int windowSize = 15; // default value
-            double k = -0.2; // default value
+            int windowSize = 15; // domyślna wartość
+            double k = -0.2; // domyślna wartość
 
             if (int.TryParse(SizeTextBox.Text, out int parsedSize))
             {

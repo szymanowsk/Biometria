@@ -1,23 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Biometria
 {
-    /// <summary>
-    /// Interaction logic for FiltersWindow.xaml
-    /// </summary>
     public partial class FiltersWindow : Window
     {
         private Bitmap? _bitmap;
@@ -191,7 +177,7 @@ namespace Biometria
             {
                 for (int x = 0; x < width; x++)
                 {
-                    // Zbierz piksele z okna maski
+                    // zbierz piksele z okna maski
                     List<int> rValues = new List<int>();
                     List<int> gValues = new List<int>();
                     List<int> bValues = new List<int>();
@@ -211,7 +197,7 @@ namespace Biometria
                         }
                     }
 
-                    // Znajdź medianę dla każdego kanału
+                    // znajdź medianę dla każdego kanału
                     rValues.Sort();
                     gValues.Sort();
                     bValues.Sort();

@@ -1,23 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Biometria
 {
-    /// <summary>
-    /// Interaction logic for BinarizeWindow.xaml
-    /// </summary>
     public partial class BinarizeWindow : Window
     {
         private Bitmap? _bitmap;
@@ -34,7 +19,7 @@ namespace Biometria
             if (_bitmap == null)
                 return;
 
-            int threshold = 128; // Default threshold
+            int threshold = 128; // domyślny threshold
 
             if (int.TryParse(ThresholdTextBox.Text, out int parsedThreshold))
             {
@@ -59,7 +44,7 @@ namespace Biometria
 
                     int binary = gray >= threshold ? 255 : 0;
 
-                    // Ustawienie nowego piksela jako czarno-biały
+                    // ustawienie nowego piksela jako czarno-biały
                     binaryBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(binary, binary, binary));
                 }
             }
