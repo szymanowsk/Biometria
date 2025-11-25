@@ -5,52 +5,77 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Biometria"
         mc:Ignorable="d"
-        Title="FiltersWindow" Height="300" Width="400">
+        Title="FiltersWindow" Height="450" Width="500">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
         <GroupBox Header="Convolution Filters" Margin="10">
             <StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
 
-                    <TextBox Name="Mask00" Grid.Row="0" Grid.Column="0" Width="30" />
-                    <TextBox Name="Mask01" Grid.Row="0" Grid.Column="1" Width="30" />
-                    <TextBox Name="Mask02" Grid.Row="0" Grid.Column="2" Width="30" />
-                    <TextBox Name="Mask10" Grid.Row="1" Grid.Column="0" Width="30" />
-                    <TextBox Name="Mask11" Grid.Row="1" Grid.Column="1" Width="30" />
-                    <TextBox Name="Mask12" Grid.Row="1" Grid.Column="2" Width="30" />
-                    <TextBox Name="Mask20" Grid.Row="2" Grid.Column="0" Width="30" />
-                    <TextBox Name="Mask21" Grid.Row="2" Grid.Column="1" Width="30" />
-                    <TextBox Name="Mask22" Grid.Row="2" Grid.Column="2" Width="30" />
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <TextBlock Text="Mask Size:" Margin="0,0,0,5"/>
+                        <ComboBox Name="CmbMaskSize" SelectionChanged="CmbMaskSize_SelectionChanged" Width="60">
+                            <ComboBoxItem Content="3x3" IsSelected="True"/>
+                            <ComboBoxItem Content="5x5"/>
+                            <ComboBoxItem Content="7x7"/>
+                            <ComboBoxItem Content="Custom"/>
+                        </ComboBox>
+
+                        <StackPanel Name="CustomSizeContainer" Visibility="Collapsed" Margin="0,5,0,0">
+                            <TextBlock Text="Custom Size:"/>
+                            <TextBox Name="TxtCustomSize" Text="3" Width="40" HorizontalAlignment="Left"/>
+                            <Button Content="Apply Size" Click="BtnApplyCustomSize_Click" Margin="0,5,0,0" Padding="5,2"/>
+                        </StackPanel>
+                        </StackPanel>
+
+                    <ScrollViewer Grid.Column="1"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto"
+                                  MaxHeight="240"
+                                  Margin="5">
+
+                        <Border BorderBrush="Gray"
+                                BorderThickness="1"
+                                Padding="10"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top">
+
+                            <ContentControl Name="MaskGridContainer"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+
+                        </Border>
+                    </ScrollViewer>
+
                 </Grid>
-                <Button Content="Apply Filter" Click="BtnApplyCustomMask_Click" Margin="5" />
+
+                <Button Content="Apply Filter" Click="BtnApplyCustomMask_Click" Margin="0,10,0,5" Padding="10,5"/>
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-                    <Button Content="LowPass" Tag="LowPass" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
-                    <Button Content="Prewitt" Tag="Prewitt" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
-                    <Button Content="Sobel" Tag="Sobel" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
-                    <Button Content="Laplace" Tag="Laplace" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
-                    <Button Content="Corner" Tag="Corner" Click="BtnLoadMask_Click" Margin="10,0,0,0"/>
+                    <Button Content="LowPass" Tag="LowPass" Click="BtnLoadMask_Click" Margin="5,0"/>
+                    <Button Content="HighPass" Tag="HighPass" Click="BtnLoadMask_Click" Margin="5,0"/>
+                    <Button Content="Prewitt" Tag="Prewitt" Click="BtnLoadMask_Click" Margin="5,0"/>
+                    <Button Content="Sobel" Tag="Sobel" Click="BtnLoadMask_Click" Margin="5,0"/>
+                    <Button Content="Laplace" Tag="Laplace" Click="BtnLoadMask_Click" Margin="5,0"/>
+                    <Button Content="Corner" Tag="Corner" Click="BtnLoadMask_Click" Margin="5,0"/>
+                    <Button Content="Gaussian" Tag="Gaussian" Click="BtnLoadMask_Click" Margin="5,0"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>
 
         <GroupBox Header="Median Filters" Margin="10" Grid.Row="1">
             <StackPanel>
-                <Button Content="Median Filter 3x3" Click="BtnApplyMedian3x3_Click" Margin="0,0,0,10"/>
-                <Button Content="Median Filter 5x5" Click="BtnApplyMedian5x5_Click"/>
+                <Button Content="Median Filter 3x3" Click="BtnApplyMedian3x3_Click" Margin="0,0,0,10" Padding="10,5"/>
+                <Button Content="Median Filter 5x5" Click="BtnApplyMedian5x5_Click" Padding="10,5"/>
             </StackPanel>
         </GroupBox>
     </Grid>

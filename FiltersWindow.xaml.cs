@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -8,89 +10,220 @@ namespace Biometria
     {
         private Bitmap? _bitmap;
         public Bitmap? UpdatedBitmap { get; private set; }
+        private List<TextBox> _maskTextBoxes = new List<TextBox>();
+        private int _currentMaskSize = 3;
 
         public FiltersWindow(Bitmap bitmap)
         {
             InitializeComponent();
-            //_bitmap = (Bitmap)bitmap.Clone();
             _bitmap = bitmap;
+            InitializeMaskGrid(3);
+
+            if (CmbMaskSize != null && CmbMaskSize.Items.Count > 0)
+            {
+                CmbMaskSize.SelectedIndex = 0;
+            }
+        }
+
+        private void CmbMaskSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CmbMaskSize?.SelectedItem is ComboBoxItem item)
+            {
+                var content = item.Content?.ToString();
+                switch (content)
+                {
+                    case "3x3":
+                        if (CustomSizeContainer != null)
+                            CustomSizeContainer.Visibility = Visibility.Collapsed;
+                        InitializeMaskGrid(3);
+                        break;
+                    case "5x5":
+                        if (CustomSizeContainer != null)
+                            CustomSizeContainer.Visibility = Visibility.Collapsed;
+                        InitializeMaskGrid(5);
+                        break;
+                    case "7x7":
+                        if (CustomSizeContainer != null)
+                            CustomSizeContainer.Visibility = Visibility.Collapsed;
+                        InitializeMaskGrid(7);
+                        break;
+                    case "Custom":
+                        if (CustomSizeContainer != null)
+                            CustomSizeContainer.Visibility = Visibility.Visible;
+                        break;
+                }
+            }
+        }
+
+        private void BtnApplyCustomSize_Click(object sender, RoutedEventArgs e)
+        {
+            if (TxtCustomSize != null && int.TryParse(TxtCustomSize.Text, out int size) && size > 0 && size % 2 == 1)
+            {
+                InitializeMaskGrid(size);
+            }
+            else
+            {
+                MessageBox.Show("Please enter a positive odd number for mask size.");
+            }
+        }
+
+        private void InitializeMaskGrid(int size)
+        {
+            _currentMaskSize = size;
+            _maskTextBoxes.Clear();
+
+            if (MaskGridContainer != null)
+            {
+                // Tworzymy nową siatkę
+                Grid grid = new Grid();
+                grid.HorizontalAlignment = HorizontalAlignment.Center;
+                grid.VerticalAlignment = VerticalAlignment.Center;
+
+                // Dodajemy kolumny i wiersze
+                for (int i = 0; i < size; i++)
+                {
+                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
+                    grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
+                }
+
+                // Dodajemy pola tekstowe w formacie kwadratu
+                for (int row = 0; row < size; row++)
+                {
+                    for (int col = 0; col < size; col++)
+                    {
+                        var textBox = new TextBox
+                        {
+                            Width = 40,
+                            Height = 25,
+                            Margin = new Thickness(2),
+                            Text = "0",
+                            TextAlignment = TextAlignment.Center
+                        };
+
+                        Grid.SetRow(textBox, row);
+                        Grid.SetColumn(textBox, col);
+
+                        _maskTextBoxes.Add(textBox);
+                        grid.Children.Add(textBox);
+                    }
+                }
+
+                MaskGridContainer.Content = grid;
+            }
         }
 
         private void BtnApplyCustomMask_Click(object sender, RoutedEventArgs e)
         {
-            if (_bitmap == null) 
+            if (_bitmap == null)
                 return;
 
             try
             {
-                double[,] mask = new double[3, 3]
+                double[,] mask = new double[_currentMaskSize, _currentMaskSize];
+
+                for (int i = 0; i < _maskTextBoxes.Count; i++)
                 {
-                    { double.Parse(Mask00.Text), double.Parse(Mask01.Text), double.Parse(Mask02.Text) },
-                    { double.Parse(Mask10.Text), double.Parse(Mask11.Text), double.Parse(Mask12.Text) },
-                    { double.Parse(Mask20.Text), double.Parse(Mask21.Text), double.Parse(Mask22.Text) }
-                };
+                    int row = i / _currentMaskSize;
+                    int col = i % _currentMaskSize;
+                    if (double.TryParse(_maskTextBoxes[i].Text, out double value))
+                    {
+                        mask[row, col] = value;
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Invalid value at position ({row + 1}, {col + 1})");
+                        return;
+                    }
+                }
 
                 _bitmap = ApplyConvolution(_bitmap, mask);
                 UpdatedBitmap = _bitmap;
                 this.DialogResult = true;
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Invalid mask values.");
+                MessageBox.Show($"Error applying filter: {ex.Message}");
             }
         }
 
         private void BtnLoadMask_Click(object sender, RoutedEventArgs e)
         {
-            var maskName = (sender as Button)?.Tag.ToString();
+            var maskName = (sender as Button)?.Tag?.ToString();
+            if (maskName == null) return;
+
+            double[,] mask;
+
             switch (maskName)
             {
                 case "LowPass":
-                    SetMaskValues(new double[3, 3]
+                    mask = new double[3, 3]
                     {
                         { 1 / 9.0, 1 / 9.0, 1 / 9.0 },
                         { 1 / 9.0, 1 / 9.0, 1 / 9.0 },
                         { 1 / 9.0, 1 / 9.0, 1 / 9.0 }
-                    });
+                    };
+                    break;
+                case "HighPass":
+                    mask = new double[3, 3]
+                    {
+                        {  0, -1,  0 },
+                        { -1,  5, -1 },
+                        {  0, -1,  0 }
+                    };
                     break;
                 case "Prewitt":
-                    SetMaskValues(new double[3, 3]
+                    mask = new double[3, 3]
                     {
                         { -1, 0, 1 },
                         { -1, 0, 1 },
                         { -1, 0, 1 }
-                    }); 
+                    };
                     break;
                 case "Sobel":
-                    SetMaskValues(new double[3, 3]
+                    mask = new double[3, 3]
                     {
                         { -1, 0, 1 },
                         { -2, 0, 2 },
                         { -1, 0, 1 }
-                    });
+                    };
                     break;
                 case "Laplace":
-                    SetMaskValues(new double[3, 3]
-                    {   
+                    mask = new double[3, 3]
+                    {
                         { 0, -1, 0 },
                         { -1, 4, -1 },
                         { 0, -1, 0 }
-                    });
+                    };
                     break;
                 case "Corner":
-                    SetMaskValues(new double[3, 3]
+                    mask = new double[3, 3]
                     {
                         { 1, 1, 1 },
-                        { 1, -2, -1 },
-                        { 1, -1, -1 }
-                    });
+                        { 1, -2, 1 },
+                        { 1, 1, 1 }
+                    };
                     break;
+                case "Gaussian":
+                    mask = new double[5, 5]
+                    {
+                        { 1/273.0, 4/273.0, 7/273.0, 4/273.0, 1/273.0 },
+                        { 4/273.0, 16/273.0, 26/273.0, 16/273.0, 4/273.0 },
+                        { 7/273.0, 26/273.0, 41/273.0, 26/273.0, 7/273.0 },
+                        { 4/273.0, 16/273.0, 26/273.0, 16/273.0, 4/273.0 },
+                        { 1/273.0, 4/273.0, 7/273.0, 4/273.0, 1/273.0 }
+                    };
+                    break;
+                default:
+                    return;
             }
+
+            InitializeMaskGrid(mask.GetLength(0));
+            SetMaskValues(mask);
         }
 
         private void BtnApplyMedian3x3_Click(object sender, RoutedEventArgs e)
         {
-            if (_bitmap == null) 
+            if (_bitmap == null)
                 return;
 
             _bitmap = ApplyMedianFilter(_bitmap, 3);
@@ -100,7 +233,7 @@ namespace Biometria
 
         private void BtnApplyMedian5x5_Click(object sender, RoutedEventArgs e)
         {
-            if (_bitmap == null) 
+            if (_bitmap == null)
                 return;
 
             _bitmap = ApplyMedianFilter(_bitmap, 5);
@@ -110,15 +243,13 @@ namespace Biometria
 
         private void SetMaskValues(double[,] mask)
         {
-            Mask00.Text = mask[0, 0].ToString();
-            Mask01.Text = mask[0, 1].ToString();
-            Mask02.Text = mask[0, 2].ToString();
-            Mask10.Text = mask[1, 0].ToString();
-            Mask11.Text = mask[1, 1].ToString();
-            Mask12.Text = mask[1, 2].ToString();
-            Mask20.Text = mask[2, 0].ToString();
-            Mask21.Text = mask[2, 1].ToString();
-            Mask22.Text = mask[2, 2].ToString();
+            int size = mask.GetLength(0);
+            for (int i = 0; i < size * size && i < _maskTextBoxes.Count; i++)
+            {
+                int row = i / size;
+                int col = i % size;
+                _maskTextBoxes[i].Text = mask[row, col].ToString("F4");
+            }
         }
 
         private Bitmap ApplyConvolution(Bitmap bitmap, double[,] mask)
@@ -154,9 +285,9 @@ namespace Biometria
                         }
                     }
 
-                    int r = Math.Min(255, Math.Max(0, (int)rSum));
-                    int g = Math.Min(255, Math.Max(0, (int)gSum));
-                    int b = Math.Min(255, Math.Max(0, (int)bSum));
+                    int r = Math.Min(255, Math.Max(0, (int)Math.Round(rSum)));
+                    int g = Math.Min(255, Math.Max(0, (int)Math.Round(gSum)));
+                    int b = Math.Min(255, Math.Max(0, (int)Math.Round(bSum)));
 
                     newBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(r, g, b));
                 }
@@ -177,7 +308,6 @@ namespace Biometria
             {
                 for (int x = 0; x < width; x++)
                 {
-                    // zbierz piksele z okna maski
                     List<int> rValues = new List<int>();
                     List<int> gValues = new List<int>();
                     List<int> bValues = new List<int>();
@@ -197,7 +327,6 @@ namespace Biometria
                         }
                     }
 
-                    // znajdź medianę dla każdego kanału
                     rValues.Sort();
                     gValues.Sort();
                     bValues.Sort();
