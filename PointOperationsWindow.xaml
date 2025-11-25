@@ -1,0 +1,55 @@
+﻿<Window x:Class="Biometria.PointOperationsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Biometria"
+        mc:Ignorable="d"
+        Title="PointOperationsWindow" Height="450" Width="350">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+
+            <TextBlock Text="Add value:" Margin="0,5"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Name="AddBox" Width="80"/>
+                <Button Content="Apply" Click="BtnAdd_Click" Width="80" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <TextBlock Text="Subtract value:" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Name="SubBox" Width="80"/>
+                <Button Content="Apply" Click="BtnSub_Click" Width="80" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <TextBlock Text="Multiply:" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Name="MulBox" Width="80"/>
+                <Button Content="Apply" Click="BtnMul_Click" Width="80" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <TextBlock Text="Divide:" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Name="DivBox" Width="80"/>
+                <Button Content="Apply" Click="BtnDiv_Click" Width="80" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <TextBlock Text="Brightness change:" Margin="0,10,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBox Name="BrightnessBox" Width="80"/>
+                <Button Content="Apply" Click="BtnBrightness_Click" Width="80" Margin="10,0,0,0"/>
+            </StackPanel>
+
+            <TextBlock Text="Grayscale:" Margin="0,20,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Average" Width="100" Click="BtnGrayAvg_Click"/>
+                <Button Content="NTSC" Width="100" Margin="10,0,0,0" Click="BtnGrayNtsc_Click"/>
+            </StackPanel>
+
+        </StackPanel>
+    </Grid>
+</Window>
