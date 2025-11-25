@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Biometria"
         mc:Ignorable="d"
-        Title="FiltersWindow" Height="450" Width="500">
+        Title="FiltersWindow" Height="450" Width="600">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -67,7 +67,8 @@
                     <Button Content="Sobel" Tag="Sobel" Click="BtnLoadMask_Click" Margin="5,0"/>
                     <Button Content="Laplace" Tag="Laplace" Click="BtnLoadMask_Click" Margin="5,0"/>
                     <Button Content="Corner" Tag="Corner" Click="BtnLoadMask_Click" Margin="5,0"/>
-                    <Button Content="Gaussian" Tag="Gaussian" Click="BtnLoadMask_Click" Margin="5,0"/>
+                    <Button Content="Gaussian 3x3" Tag="Gaussian3" Click="BtnLoadMask_Click" Margin="5,0"/>
+                    <Button Content="Gaussian 5x5" Tag="Gaussian5" Click="BtnLoadMask_Click" Margin="5,0"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

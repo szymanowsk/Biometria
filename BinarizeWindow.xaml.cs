@@ -66,7 +66,6 @@ namespace Biometria
         {
             int[] hist = new int[256];
 
-            // Histogram szarości
             for (int y = 0; y < bmp.Height; y++)
             {
                 for (int x = 0; x < bmp.Width; x++)
@@ -80,7 +79,6 @@ namespace Biometria
             int totalPixels = bmp.Width * bmp.Height;
             int requiredBlack = (percentBlack * totalPixels) / 100;
 
-            // Znalezienie progu
             int cumulative = 0;
             int threshold = 0;
 
@@ -111,7 +109,6 @@ namespace Biometria
             int width = bmp.Width;
             int height = bmp.Height;
 
-            // Oblicz histogram dla przyspieszenia
             int[] hist = new int[256];
             long[] histTimesIntensity = new long[256];
 
@@ -127,7 +124,6 @@ namespace Biometria
                 }
             }
 
-            // Początkowy próg - średnia globalna
             long totalPixels = width * height;
             long totalSum = 0;
 
@@ -136,7 +132,6 @@ namespace Biometria
 
             int threshold = (int)(totalSum / totalPixels);
 
-            // ITERACJE
             while (true)
             {
                 long sumA = 0, countA = 0;
@@ -163,12 +158,11 @@ namespace Biometria
                 int newThreshold = (meanA + meanB) / 2;
 
                 if (newThreshold == threshold)
-                    break; // konwergencja
+                    break;
 
                 threshold = newThreshold;
             }
 
-            // Binaryzacja z finalnym progiem
             return BinarizeManual(bmp, threshold);
         }
 

@@ -74,19 +74,16 @@ namespace Biometria
 
             if (MaskGridContainer != null)
             {
-                // Tworzymy nową siatkę
                 Grid grid = new Grid();
                 grid.HorizontalAlignment = HorizontalAlignment.Center;
                 grid.VerticalAlignment = VerticalAlignment.Center;
 
-                // Dodajemy kolumny i wiersze
                 for (int i = 0; i < size; i++)
                 {
                     grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Auto) });
                     grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Auto) });
                 }
 
-                // Dodajemy pola tekstowe w formacie kwadratu
                 for (int row = 0; row < size; row++)
                 {
                     for (int col = 0; col < size; col++)
@@ -203,14 +200,23 @@ namespace Biometria
                         { 1, 1, 1 }
                     };
                     break;
-                case "Gaussian":
+                case "Gaussian3":
+                    mask = new double[3, 3]
+                    {
+                        { 1/16.0, 2/16.0, 1/16.0 },
+                        { 2/16.0, 4/16.0, 2/16.0 },
+                        { 1/16.0, 2/16.0, 1/16.0 }
+                    };
+                    break;
+
+                case "Gaussian5":
                     mask = new double[5, 5]
                     {
-                        { 1/273.0, 4/273.0, 7/273.0, 4/273.0, 1/273.0 },
+                        { 1/273.0,  4/273.0,  7/273.0,  4/273.0, 1/273.0 },
                         { 4/273.0, 16/273.0, 26/273.0, 16/273.0, 4/273.0 },
                         { 7/273.0, 26/273.0, 41/273.0, 26/273.0, 7/273.0 },
                         { 4/273.0, 16/273.0, 26/273.0, 16/273.0, 4/273.0 },
-                        { 1/273.0, 4/273.0, 7/273.0, 4/273.0, 1/273.0 }
+                        { 1/273.0,  4/273.0,  7/273.0,  4/273.0, 1/273.0 }
                     };
                     break;
                 default:
