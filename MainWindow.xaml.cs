@@ -501,34 +501,20 @@ namespace Biometria
             ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
 
-        private void BtnBinarizeOtsuWindow_Click(object sender, RoutedEventArgs e)
+        private void BtnPointOperationsWindow_Click(object sender, RoutedEventArgs e)
         {
             if (_bitmap == null)
                 return;
 
-            OtsuWindow otsuWindow = new OtsuWindow(_bitmap);
-            otsuWindow.ShowDialog();
+            PointOperationsWindow window = new PointOperationsWindow(_bitmap);
+            window.ShowDialog();
 
-            if (otsuWindow.UpdatedBitmap == null) 
+            if (window.UpdatedBitmap == null)
                 return;
 
-            _bitmap = otsuWindow.UpdatedBitmap;
+            _bitmap = window.UpdatedBitmap;
             ImageDisplay.Source = BitmapToImageSource(_bitmap);
         }
 
-        private void BtnBinarizeNiblackWindow_Click(object sender, RoutedEventArgs e)
-        {
-            if (_bitmap == null)
-                return;
-
-            NiblackWindow niblackWindow = new NiblackWindow(_bitmap);
-            niblackWindow.ShowDialog();
-
-            if (niblackWindow.UpdatedBitmap == null) 
-                return;
-
-            _bitmap = niblackWindow.UpdatedBitmap;
-            ImageDisplay.Source = BitmapToImageSource(_bitmap);
-        }
     }
 }
