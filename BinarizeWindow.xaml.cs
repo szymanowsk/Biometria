@@ -271,5 +271,198 @@ namespace Biometria
             }
             return binaryBitmap;
         }
+
+        private void BtnApplyEntropy_Click(object sender, RoutedEventArgs e)
+        {
+            if (_bitmap == null) return;
+            int threshold = EntropyThreshold(_bitmap);
+            UpdatedBitmap = BinarizeManual(_bitmap, threshold);
+            this.DialogResult = true;
+        }
+
+        private int EntropyThreshold(Bitmap bmp)
+        {
+            int[] hist = new int[256];
+            int width = bmp.Width;
+            int height = bmp.Height;
+            int total = width * height;
+
+            // histogram
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                {
+                    Color p = bmp.GetPixel(x, y);
+                    int g = (p.R + p.G + p.B) / 3;
+                    hist[g]++;
+                }
+
+            double[] pHist = hist.Select(h => (double)h / total).ToArray();
+
+            double maxEntropy = double.NegativeInfinity;
+            int bestThreshold = 0;
+
+            for (int t = 1; t < 255; t++)
+            {
+                double pT = pHist.Take(t).Sum();
+                double pB = 1 - pT;
+
+                if (pT == 0 || pB == 0) continue;
+
+                double hT = 0.0;
+                double hB = 0.0;
+
+                for (int i = 0; i < t; i++)
+                    if (pHist[i] > 0)
+                        hT -= (pHist[i] / pT) * Math.Log(pHist[i] / pT);
+
+                for (int i = t; i < 256; i++)
+                    if (pHist[i] > 0)
+                        hB -= (pHist[i] / pB) * Math.Log(pHist[i] / pB);
+
+                double entropy = hT + hB;
+
+                if (entropy > maxEntropy)
+                {
+                    maxEntropy = entropy;
+                    bestThreshold = t;
+                }
+            }
+
+            return bestThreshold;
+        }
+
+        private void BtnApplyMinError_Click(object sender, RoutedEventArgs e)
+        {
+            if (_bitmap == null) return;
+            int threshold = MinimumErrorThreshold(_bitmap);
+            UpdatedBitmap = BinarizeManual(_bitmap, threshold);
+            this.DialogResult = true;
+        }
+
+        private int MinimumErrorThreshold(Bitmap bmp)
+        {
+            int[] hist = new int[256];
+            int width = bmp.Width, height = bmp.Height;
+
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                {
+                    Color p = bmp.GetPixel(x, y);
+                    int g = (p.R + p.G + p.B) / 3;
+                    hist[g]++;
+                }
+
+            int total = width * height;
+
+            double minJ = double.PositiveInfinity;
+            int threshold = 0;
+
+            for (int t = 1; t < 255; t++)
+            {
+                double w0 = hist.Take(t).Sum() / (double)total;
+                double w1 = 1 - w0;
+
+                if (w0 == 0 || w1 == 0) continue;
+
+                double mean0 = 0, mean1 = 0;
+                double var0 = 0, var1 = 0;
+
+                for (int i = 0; i < t; i++)
+                    mean0 += i * hist[i];
+                mean0 /= hist.Take(t).Sum();
+
+                for (int i = t; i < 256; i++)
+                    mean1 += i * hist[i];
+                mean1 /= hist.Skip(t).Sum();
+
+                for (int i = 0; i < t; i++)
+                    var0 += hist[i] * (i - mean0) * (i - mean0);
+                var0 /= hist.Take(t).Sum();
+
+                for (int i = t; i < 256; i++)
+                    var1 += hist[i] * (i - mean1) * (i - mean1);
+                var1 /= hist.Skip(t).Sum();
+
+                if (var0 <= 0 || var1 <= 0) continue;
+
+                double J = 1 + 2 * (w0 * Math.Log(Math.Sqrt(var0)) + w1 * Math.Log(Math.Sqrt(var1)))
+                           - 2 * (w0 * Math.Log(w0) + w1 * Math.Log(w1));
+
+                if (J < minJ)
+                {
+                    minJ = J;
+                    threshold = t;
+                }
+            }
+
+            return threshold;
+        }
+
+        private void BtnApplyFuzzy_Click(object sender, RoutedEventArgs e)
+        {
+            if (_bitmap == null) return;
+            int threshold = FuzzyMinimumErrorThreshold(_bitmap);
+            UpdatedBitmap = BinarizeManual(_bitmap, threshold);
+            this.DialogResult = true;
+        }
+
+        private int FuzzyMinimumErrorThreshold(Bitmap bmp)
+        {
+            int[] hist = new int[256];
+            int width = bmp.Width, height = bmp.Height;
+
+            for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
+                {
+                    Color p = bmp.GetPixel(x, y);
+                    int g = (p.R + p.G + p.B) / 3;
+                    hist[g]++;
+                }
+
+            int total = width * height;
+            int bestT = 0;
+            double bestCost = double.PositiveInfinity;
+
+            for (int t = 1; t < 255; t++)
+            {
+                double μ0 = hist.Take(t).Sum() / (double)total;
+                double μ1 = 1 - μ0;
+
+                if (μ0 == 0 || μ1 == 0) continue;
+
+                double mean0 = 0, mean1 = 0;
+                double var0 = 0, var1 = 0;
+
+                for (int i = 0; i < t; i++)
+                    mean0 += i * hist[i];
+                mean0 /= hist.Take(t).Sum();
+
+                for (int i = t; i < 256; i++)
+                    mean1 += i * hist[i];
+                mean1 /= hist.Skip(t).Sum();
+
+                for (int i = 0; i < t; i++)
+                    var0 += hist[i] * Math.Pow(i - mean0, 2);
+                var0 /= hist.Take(t).Sum();
+
+                for (int i = t; i < 256; i++)
+                    var1 += hist[i] * Math.Pow(i - mean1, 2);
+                var1 /= hist.Skip(t).Sum();
+
+                if (var0 <= 0 || var1 <= 0) continue;
+
+                // fuzzy entropy-based cost function
+                double cost = μ0 * Math.Log(var0) + μ1 * Math.Log(var1)
+                              - μ0 * Math.Log(μ0) - μ1 * Math.Log(μ1);
+
+                if (cost < bestCost)
+                {
+                    bestCost = cost;
+                    bestT = t;
+                }
+            }
+
+            return bestT;
+        }
     }
 }

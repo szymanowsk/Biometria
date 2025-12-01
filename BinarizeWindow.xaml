@@ -5,10 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Biometria"
         mc:Ignorable="d"
-        Title="BinarizeWindow" Height="300" Width="320">
+        Title="BinarizeWindow" Height="600" Width="320">
     <ScrollViewer>
         <Grid Margin="10">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -49,11 +56,30 @@
 
             <TextBlock Text="Niblack Method:" Grid.Row="8"/>
             <StackPanel Grid.Row="9" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,5,0,10">
-                <TextBox x:Name="NiblackSizeTextBox" Width="60" Height="20" Margin="0,0,10,0"/>
-                <TextBox x:Name="NiblackKTextBox" Width="60" Height="20" Text="-0.2"/>
+                <TextBox x:Name="NiblackSizeTextBox" Width="60" Margin="0,0,10,0"/>
+                <TextBox x:Name="NiblackKTextBox" Width="60" Text="-0.2"/>
                 <Button Content="Apply Niblack" Margin="10,0,0,0" Width="120" Height="20"
                         Click="BtnApplyNiblack_Click"/>
             </StackPanel>
+
+            <TextBlock Text="Entropy Selection:" Grid.Row="10"/>
+            <StackPanel Grid.Row="11" Orientation="Horizontal" Margin="0,5,0,10">
+                <Button Content="Apply Entropy" Width="150"
+            Click="BtnApplyEntropy_Click"/>
+            </StackPanel>
+
+            <TextBlock Text="Minimum Error:" Grid.Row="12"/>
+            <StackPanel Grid.Row="13" Orientation="Horizontal" Margin="0,5,0,10">
+                <Button Content="Apply MinError" Width="150"
+            Click="BtnApplyMinError_Click"/>
+            </StackPanel>
+
+            <TextBlock Text="Fuzzy Minimum Error:" Grid.Row="14"/>
+            <StackPanel Grid.Row="15" Orientation="Horizontal" Margin="0,5,0,10">
+                <Button Content="Apply Fuzzy" Width="150"
+            Click="BtnApplyFuzzy_Click"/>
+            </StackPanel>
+
 
         </Grid>
     </ScrollViewer>
